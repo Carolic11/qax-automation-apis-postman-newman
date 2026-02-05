@@ -1,0 +1,290 @@
+{
+  "info": {
+    "_postman_id": "b341e540-00d6-4842-8bd2-ff796ddbb5bc",
+    "name": "Challenge 1: Testing Apis en Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14646251",
+    "_collection_link": "https://go.postman.co/collection/14646251-b341e540-00d6-4842-8bd2-ff796ddbb5bc?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "reqres_57866a7d0e964559a31cc1851027da0a",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}{{enpoint_users}}",
+          "host": [
+            "{{base_url}}{{enpoint_users}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "register",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "let dinamico = Date.now();",
+              "let email_dinamico  = `uncorreomas_${dinamico}@gmail.com`;",
+              "pm.environment.set(\"email_local\",email_dinamico);",
+              "",
+              "let email = pm.environment.get(\"email_local\");",
+              "",
+              "if (!email || !email.includes(\"@\")) {",
+              "    throw new Error(\"se debe incluir un email válido\");",
+              "}",
+              "if (!email || !email.includes(\"\")) {",
+              "    throw new Error(\"se debe al menos un correo\");",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Safely parse JSON response",
+              "let jsonData = null;",
+              "let isValidJson = false;",
+              "",
+              "try {",
+              "    const responseText = pm.response.text();",
+              "    if (responseText && responseText.trim().length > 0) {",
+              "        jsonData = JSON.parse(responseText);",
+              "        isValidJson = true;",
+              "    }",
+              "} catch (e) {",
+              "    console.log(\"Response is not valid JSON:\", e.message);",
+              "}",
+              "",
+              "// Only run tests if we have valid JSON",
+              "if (isValidJson && jsonData) {",
+              "    // Validar status",
+              "    pm.test(\"status code  is 201\", function () {",
+              "        pm.response.to.have.status(201);",
+              "    });",
+              "",
+              "    // Validar estructura",
+              "    pm.test(\"La respuesta incluye el objeto data\", function () {",
+              "        pm.expect(jsonData).to.have.property(\"data\");",
+              "    });",
+              "",
+              "    // Validar id (only if data exists)",
+              "    if (jsonData.data) {",
+              "        pm.test(\"El id debe ser una cadena y no venir vacío\", function () {",
+              "            pm.expect(jsonData.data).to.have.property(\"id\");",
+              "            pm.expect(jsonData.data.id).to.be.a(\"string\");",
+              "            pm.expect(jsonData.data.id).to.not.be.empty;",
+              "        });",
+              "    }",
+              "} else {",
+              "    // Log a warning when response is empty or not JSON",
+              "    pm.test(\"Response body is empty or not valid JSON - skipping JSON validation tests\", function () {",
+              "        pm.expect.fail(\"Cannot parse response as JSON. Response body: \" + (pm.response.text() || \"(empty)\"));",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Sofiao\",\n    \"email\": \"{{email_local}}\",\n    \"password\": \"2349656428\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}{{endpoint_register}}",
+          "host": [
+            "{{base_url}}{{endpoint_register}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "",
+              "let jsonData2 = null;",
+              "let isValidJson2 = false;",
+              "",
+              "try {",
+              "    const responseText = pm.response.text();",
+              "    if (responseText && responseText.trim().length > 0) {",
+              "        jsonData2 = JSON.parse(responseText);",
+              "        isValidJson2 = true;",
+              "    }",
+              "} catch (e) {",
+              "    console.log(\"Response is not valid JSON:\", e.message);",
+              "}",
+              "",
+              "// Only run tests if we have valid JSON",
+              "if (isValidJson2 && jsonData2) {",
+              "    // Validar status",
+              "    pm.test(\"El estado de la respuesta es 201\", function () {",
+              "        pm.response.to.have.status(200);",
+              "    });",
+              "",
+              "    // Validar estructura",
+              "    pm.test(\"La respuesta incluye el objeto data\", function () {",
+              "        pm.expect(jsonData2).to.have.property(\"data\");",
+              "    });",
+              "",
+              "    // Validar id (only if data exists)",
+              "    if (jsonData2.data) {",
+              "        pm.test(\"El token esta dentro de la respuesta \", function () {",
+              "            pm.expect(jsonData2.data).to.have.property(\"token\");",
+              "            pm.expect(jsonData2.data.id).to.be.a(\"string\");",
+              "            pm.expect(jsonData2.data.id).to.not.be.empty;",
+              "        });",
+              "    }",
+              "} else {",
+              "    // Log a warning when response is empty or not JSON",
+              "    pm.test(\"Response body is empty or not valid JSON - skipping JSON validation tests\", function () {",
+              "        pm.expect.fail(\"Cannot parse response as JSON. Response body: \" + (pm.response.text() || \"(empty)\"));",
+              "    });",
+              "}",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "reqres_57866a7d0e964559a31cc1851027da0a",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{{login}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}{{enpoint_login}}",
+          "host": [
+            "{{base_url}}{{enpoint_login}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
