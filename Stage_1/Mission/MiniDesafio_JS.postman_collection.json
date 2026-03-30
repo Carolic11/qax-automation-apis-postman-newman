@@ -1,0 +1,300 @@
+{
+  "info": {
+    "_postman_id": "1ddf7897-ba2b-4918-bb70-aebf313e7aac",
+    "name": "MiniDesafio_JS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14646251",
+    "_collection_link": "https://go.postman.co/collection/14646251-1ddf7897-ba2b-4918-bb70-aebf313e7aac?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "MiniDesa_typicode_characters",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"El código de estado es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"El header contiene Content-Type\", function () {",
+              "    pm.response.to.have.header(\"Content-Type\");",
+              "});",
+              "",
+              "pm.test(\"Validar la estructura correcta root\", function () {",
+              "    const jsonData = pm.response.json();",
+              "",
+              "    pm.expect(jsonData).to.be.an(\"object\");",
+              "    pm.expect(jsonData).to.have.property(\"count\");",
+              "    pm.expect(jsonData).to.have.property(\"next\");",
+              "    pm.expect(jsonData).to.have.property(\"prev\");",
+              "    pm.expect(jsonData).to.have.property(\"pages\");",
+              "    pm.expect(jsonData).to.have.property(\"results\");",
+              "});",
+              "",
+              "pm.test(\"Validar tipos de datos del root\", function () {",
+              "    const jsonData = pm.response.json();",
+              "",
+              "    pm.expect(jsonData.count).to.be.a(\"number\");",
+              "    pm.expect(jsonData.pages).to.be.a(\"number\");",
+              "",
+              "    // next / prev pueden venir como null o string (URL)",
+              "    pm.expect(jsonData.next === null || typeof jsonData.next === \"string\").to.be.true;",
+              "    pm.expect(jsonData.prev === null || typeof jsonData.prev === \"string\").to.be.true;",
+              "",
+              "    pm.expect(jsonData.results).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Validar count > 0\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.count).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Pages es mayor que 0\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.pages).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Pages <= expectedPages\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.pages).to.be.at.most(200);",
+              "});",
+              "",
+              "pm.test(\"Validar la cantidad de elementos (results) es mayor que 0\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.results.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Validar estructura y tipos de datos de personajes\", function () {",
+              "    const jsonData = pm.response.json();",
+              "",
+              "    pm.expect(jsonData.results).to.be.an(\"array\");",
+              "",
+              "    jsonData.results.forEach((c) => {",
+              "        // estructura",
+              "        pm.expect(c).to.be.an(\"object\");",
+              "        pm.expect(c).to.have.property(\"id\");",
+              "        pm.expect(c).to.have.property(\"name\");",
+              "        pm.expect(c).to.have.property(\"age\");",
+              "        pm.expect(c).to.have.property(\"gender\");",
+              "        pm.expect(c).to.have.property(\"occupation\");",
+              "        pm.expect(c).to.have.property(\"portrait_path\");",
+              "        pm.expect(c).to.have.property(\"phrases\");",
+              "        pm.expect(c).to.have.property(\"status\");",
+              "        pm.expect(c).to.have.property(\"birthdate\");",
+              "",
+              "        // tipos",
+              "        pm.expect(c.id).to.be.a(\"number\");",
+              "        pm.expect(c.name).to.be.a(\"string\");",
+              "",
+              "        // age puede ser number o null",
+              "        pm.expect(c.age === null || typeof c.age === \"number\").to.be.true;",
+              "",
+              "        pm.expect(c.gender).to.be.a(\"string\");",
+              "        pm.expect(c.occupation).to.be.a(\"string\");",
+              "        pm.expect(c.portrait_path).to.be.a(\"string\");",
+              "        pm.expect(c.status).to.be.a(\"string\");",
+              "",
+              "        // birthdate puede ser null o string",
+              "        pm.expect(c.birthdate === null || typeof c.birthdate === \"string\").to.be.true;",
+              "",
+              "    ",
+              "        pm.expect(c.phrases).to.be.an(\"array\");",
+              "        c.phrases.forEach((p) => pm.expect(p).to.be.a(\"string\"));",
+              "    });",
+              "",
+              "",
+              "});",
+              "",
+              "pm.test(\"Listado ordenado por id ascendente\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    const results = jsonData.results;",
+              "",
+              "    for (let i = 0; i < results.length - 1; i++) {",
+              "        pm.expect(results[i].id).to.be.at.most(results[i + 1].id);",
+              "    }",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://thesimpsonsapi.com/api/characters",
+          "protocol": "https",
+          "host": [
+            "thesimpsonsapi",
+            "com"
+          ],
+          "path": [
+            "api",
+            "characters"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "MiniDesa_typicode_?page=1",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Respuesta exitosa con page como query param\", function () {",
+              "      pm.response.to.have.status(200);",
+              "  });",
+              "",
+              " "
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://thesimpsonsapi.com/api/characters?page=1",
+          "protocol": "https",
+          "host": [
+            "thesimpsonsapi",
+            "com"
+          ],
+          "path": [
+            "api",
+            "characters"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "MiniDesa_typicode_id_Inexistente",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"El código de estado es 404\"), function () {",
+              "    pm.response.to.have.status(404);",
+              "};",
+              "",
+              "",
+              "pm.test(\"mensaje de error no fount\"), function () {",
+              "    const jsonData = pm.response.json();",
+              "",
+              "    pm.expect(jsonData).to.have.property(\"error\")",
+              "    pm.expect(jsonData.error).to.eql(\"Character not found\")",
+              "}",
+              "",
+              "pm.test(\"Retornar el id enviado\"), function () {",
+              "",
+              "    const jsonData = pm.response.json();",
+              "    const sentId = parseInt(pm.environment.get(\"invalid_character_id\"))",
+              "",
+              "    pm.expect(jsonData.id).to.eql(sentId);",
+              "}",
+              "",
+              "",
+              "pm.test(\"El mensaje de error es 'Invalid page parameter\"), function () {",
+              "",
+              "    const jsonData = pm.response.json();",
+              "",
+              "    pm.expect(jsonData.error).to.eql(\"Invalid page parameter\");",
+              "",
+              "};",
+              "",
+              "pm.test(\"Results\", function () {",
+              "",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.not.have.property(\"results\");",
+              "",
+              "});",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://thesimpsonsapi.com/api/characters/{{invalid_character_id}}",
+          "protocol": "https",
+          "host": [
+            "thesimpsonsapi",
+            "com"
+          ],
+          "path": [
+            "api",
+            "characters",
+            "{{invalid_character_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
